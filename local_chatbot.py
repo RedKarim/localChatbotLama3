@@ -1,48 +1,83 @@
 import gradio as gr
 import requests
 import json
+import PyPDF2
+import os
+
+def read_pdf(pdf_path):
+    """Extract text from PDF file"""
+    text = ""
+    try:
+        with open(pdf_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfReader(file)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        return text
+    except Exception as e:
+        return f"Error reading PDF: {str(e)}"
 
 def generate_response(message, history):
-    # Ollama API endpoint (default local URL)
+    # Load CV text
+    cv_text = read_pdf("cv.pdf")
+    
+    # Ollama API endpoint
     url = "http://localhost:11434/api/generate"
     
-    # Prepare the prompt with conversation history
-    conversation = ""
+    # Create a system prompt that includes the CV context
+    system_prompt = f"""You are a helpful AI assistant that has access to the following CV/resume:
+
+{cv_text}
+
+Please answer questions about this CV accurately based on the information provided above. 
+If a question cannot be answered based on the information in the CV, please say so.
+"""
+    
+    # Prepare the conversation history
+    conversation = f"System: {system_prompt}\n"
     for user_msg, assistant_msg in history:
         conversation += f"User: {user_msg}\nAssistant: {assistant_msg}\n"
     conversation += f"User: {message}\nAssistant:"
     
     # Prepare the request payload
     payload = {
-        "model": "llama3.2",  # Updated to use Llama2 3.2
+        "model": "llama3.2",
         "prompt": conversation,
         "stream": False,
-        "temperature": 0.7,  # Added temperature for better response variety
-        "max_tokens": 2000    # Added max tokens to control response length
+        "temperature": 0.7,
+        "max_tokens": 2000
     }
     
     try:
-        # Make the API request
         response = requests.post(url, json=payload)
-        response.raise_for_status()  # Raise an exception for bad status codes
-        
-        # Extract the response text
+        response.raise_for_status()
         result = response.json()
         return result["response"]
-        
     except requests.exceptions.RequestException as e:
         return f"Error: {str(e)}\nMake sure Ollama is running with llama2:3.2 model loaded."
+
+# Verify CV file exists
+cv_path = "cv.pdf"
+if not os.path.exists(cv_path):
+    print(f"Error: {cv_path} not found in the current directory!")
+    print(f"Current directory: {os.getcwd()}")
+    exit(1)
 
 # Create the Gradio interface
 demo = gr.ChatInterface(
     fn=generate_response,
-    title="Local LLM Chat (Llama2 3.2)",
-    description="Chat with locally hosted Llama2 3.2 model via Ollama",
-    examples=["Hello, how are you?", 
-             "Explain quantum computing in simple terms", 
-             "Write a creative story about space exploration"]
+    title="CV Question Answering System",
+    description="Ask questions about your CV. The system has already loaded your CV.pdf file.",
+    examples=[
+        "What is my work experience?",
+        "What are my key skills?",
+        "What is my educational background?",
+        "What programming languages do I know?",
+        "Summarize my CV",
+        "What are my main achievements?"
+    ]
 )
 
 # Launch the interface
 if __name__ == "__main__":
+    print("CV loaded successfully! Starting chat interface...")
     demo.launch(share=False, inbrowser=True)
