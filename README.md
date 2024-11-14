@@ -1,10 +1,10 @@
-# Local CV Chatbot with Llama 2
+# Local CV Chatbot with Llama 3
 
-A local chatbot that uses Llama 2 (via Ollama) to answer questions about your CV/resume. This application provides an intuitive chat interface where you can ask questions about your CV and get AI-powered responses.
+A local chatbot that uses Llama to answer questions about your CV/resume. This application provides an intuitive chat interface where you can ask questions about your CV and get AI-powered responses.
 
 ## Features
 
-- 🤖 Powered by Llama 2 (3.2) running locally through Ollama
+- 🤖 Powered by Llama 3.2 running locally through Ollama
 - 💬 Interactive chat interface built with Gradio
 - 📄 Automatic PDF parsing of your CV
 - 🔒 Completely local - your CV data never leaves your computer
@@ -13,14 +13,14 @@ A local chatbot that uses Llama 2 (via Ollama) to answer questions about your CV
 ## Prerequisites
 
 - Python 3.8+
-- Ollama installed with Llama 2 (3.2) model
+- Ollama installed with Llama 3.2 model
 - Your CV in PDF format
 
 ## Installation
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/local-cv-chatbot.git
+git clone https://github.com/RedKarim/localChatbotLama3.git
 cd local-cv-chatbot
 ```
 
@@ -29,7 +29,7 @@ cd local-cv-chatbot
 pip install gradio requests PyPDF2
 ```
 
-3. Install Ollama and download Llama 2 (if not already done):
+3. Install Ollama and download Llama3 (if not already done):
 ```bash
 ollama pull llama2:3.2
 ```
@@ -38,14 +38,14 @@ ollama pull llama2:3.2
 
 1. Place your CV (named `cv.pdf`) in the same directory as the script
 
-2. Start Llama 2 in Ollama:
+2. Start Llama 3in Ollama:
 ```bash
-ollama run llama2:3.2
+ollama run llam 3.2
 ```
 
 3. Run the chatbot:
 ```bash
-python cv_chatbot.py
+python local_chatbot.py
 ```
 
 4. Open your web browser and navigate to `http://localhost:7860` (opens automatically)
@@ -72,7 +72,7 @@ python cv_chatbot.py
 
 - **Backend**: Python with Ollama API
 - **Frontend**: Gradio web interface
-- **Model**: Llama 2 (3.2)
+- **Model**: Llama 3
 - **PDF Processing**: PyPDF2
 
 ## Contributing
@@ -100,7 +100,7 @@ All processing is done locally on your machine. Your CV and questions never leav
 
 If you encounter any issues:
 
-1. Ensure Ollama is running with Llama 2 model
+1. Ensure Ollama is running with Llama 3 model
 2. Check that your CV is properly named and placed
 3. Verify all dependencies are installed
 4. Check console output for error messages
